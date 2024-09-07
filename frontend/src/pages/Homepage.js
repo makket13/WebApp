@@ -8,8 +8,11 @@ const HomePage = () => {
 
   useEffect(() => {
     fetch('http://localhost:3001/api/subscribers')
-      .then(response => response.json())
-      .then(data => setSubscribers(data))
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Fetched data:', data);  // Εκτυπώνει τα δεδομένα στο console του browser
+        setSubscribers(data.Results);  // Προσαρμόζουμε για να χρησιμοποιούμε τα δεδομένα από το "Results"
+      })
       .catch((error) => console.error('Error fetching subscribers:', error));
   }, []);
 
@@ -58,7 +61,7 @@ const HomePage = () => {
         {subscribers.length > 0 ? (
           <ul>
             {subscribers.map((subscriber, index) => (
-              <li key={index}>{subscriber.name} - {subscriber.email}</li>
+              <li key={index}>{subscriber.Name} - {subscriber.EmailAddress}</li>
             ))}
           </ul>
         ) : (
