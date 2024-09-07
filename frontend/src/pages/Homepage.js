@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Homepage.css'; 
+import deleteIcon from '../images/deletebutton.png';  // Εισαγωγή του εικονιδίου
 
 const HomePage = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [updateFlag, setUpdateFlag] = useState(false);
 
-  useEffect(() => {
+  // Συνάρτηση για να κάνουμε fetch τους συνδρομητές
+  const fetchSubscribers = () => {
     fetch('http://localhost:3001/api/subscribers')
       .then((response) => response.json())
       .then((data) => {
-        console.log('Fetched data:', data);  // Εκτυπώνει τα δεδομένα στο console του browser
-        setSubscribers(data.Results);  // Προσαρμόζουμε για να χρησιμοποιούμε τα δεδομένα από το "Results"
+        setSubscribers(data.Results);
       })
       .catch((error) => console.error('Error fetching subscribers:', error));
-  }, []);
+      
+  };
+
+  useEffect(() => {
+    fetchSubscribers(); // Τρέχουμε το fetch όταν γίνεται mount το component
+    console.log("gggg")
+  }, [updateFlag]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newSubscriber = { name, email };
-
+  
+    // Optimistically update the UI with the new subscriber before waiting for the API response
+    setSubscribers([...subscribers, { Name: name, EmailAddress: email }]);
+  
     fetch('http://localhost:3001/api/subscribers', {
       method: 'POST',
       headers: {
@@ -27,14 +38,52 @@ const HomePage = () => {
       },
       body: JSON.stringify(newSubscriber),
     })
-      .then(response => response.json())
-      .then(data => {
-        setSubscribers([...subscribers, data]);
-        setName('');
-        setEmail('');
-      });
+    .then(response => response.json())
+    .then(data => {
+      console.log('Subscriber added:', data);
+      setTimeout(() => {
+        setUpdateFlag(prev => !prev);  // Ανανεώνουμε το updateFlag μετά από καθυστέρηση
+      }, 1000);
+      setName('');
+      setEmail('');
+    })
+    .catch((error) => {
+      console.error('Error adding subscriber:', error);
+  
+      // Rollback the UI update if the API call fails
+      setSubscribers(subscribers.filter(subscriber => subscriber.EmailAddress !== email));
+    });
+
+    return newSubscriber;
   };
 
+  const handleDelete = (email) => {
+    // Optimistically remove the subscriber from the UI before waiting for the API response
+    const updatedSubscribers = subscribers.filter(subscriber => subscriber.EmailAddress !== email);
+    setSubscribers(updatedSubscribers);
+  
+    fetch(`http://localhost:3001/api/subscribers/${encodeURIComponent(email)}`, {
+      method: 'DELETE',
+    })
+    .then((response) => {
+      if (response.ok) {
+        console.log(`Deleted subscriber: ${email}`);
+        setUpdateFlag(prev => !prev);
+      } else {
+        console.error('Failed to delete subscriber');
+        
+        // Rollback the UI update if the API call fails
+        setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
+      }
+    })
+    .catch((error) => {
+      console.error('Error deleting subscriber:', error);
+  
+      // Rollback the UI update if the API call fails
+      setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
+    });
+  };
+  
   return (
     <div className="homepage-container">
       <h1>Manage Subscribers</h1>
@@ -59,11 +108,31 @@ const HomePage = () => {
       <div>
         <h2>Subscribers</h2>
         {subscribers.length > 0 ? (
-          <ul>
-            {subscribers.map((subscriber, index) => (
-              <li key={index}>{subscriber.Name} - {subscriber.EmailAddress}</li>
-            ))}
-          </ul>
+          <table className="subscribers-table">
+            <thead>
+              <tr>
+                <th>Ονοματεπώνυμο</th>
+                <th>Email</th>
+                <th>Επιλογές</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subscribers.map((subscriber, index) => (
+                <tr key={index}>
+                  <td>{subscriber.Name}</td>
+                  <td>{subscriber.EmailAddress}</td>
+                  <td>
+                    <img 
+                      src={deleteIcon} 
+                      alt="Delete" 
+                      className="delete-icon" 
+                      onClick={() => handleDelete(subscriber.EmailAddress)} 
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p>No subscribers yet</p>
         )}
