@@ -9,7 +9,6 @@ const API_KEY = process.env.API_KEY;
 const LIST_ID = process.env.LIST_ID;
 const API_AUTH = Buffer.from(`${API_KEY}:`).toString('base64');
 
-// GET route για να πάρουμε τους συνδρομητές
 router.get('/', async (req, res) => {
   try {
     const response = await axios.get(`https://api.createsend.com/api/v3.2/lists/${LIST_ID}/active.json`, {
@@ -24,7 +23,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST route για να προσθέσουμε νέο συνδρομητή
 router.post('/', async (req, res) => {
   const { name, email } = req.body;
   
@@ -49,7 +47,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// DELETE route για να μεταφέρουμε έναν συνδρομητή στην κατηγορία "Deleted"
 router.delete('/:email', async (req, res) => {
   const { email } = req.params;
 

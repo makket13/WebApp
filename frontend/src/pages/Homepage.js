@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Homepage.css'; 
-import deleteIcon from '../images/deletebutton.png';  // Εισαγωγή του εικονιδίου
+import deleteIcon from '../images/deletebutton.png'; 
 
 const HomePage = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  // Συνάρτηση για να κάνουμε fetch τους συνδρομητές
   const fetchSubscribers = () => {
     fetch('http://localhost:3001/api/subscribers')
       .then((response) => response.json())
@@ -19,7 +18,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchSubscribers(); // Τρέχουμε το fetch όταν γίνεται mount το component
+    fetchSubscribers();
     
   }, []);
 
@@ -27,7 +26,7 @@ const HomePage = () => {
     e.preventDefault();
     const newSubscriber = { name, email };
   
-    // Optimistically update the UI with the new subscriber before waiting for the API response
+    
     setSubscribers([...subscribers, { Name: name, EmailAddress: email }]);
   
     fetch('http://localhost:3001/api/subscribers', {
@@ -46,7 +45,7 @@ const HomePage = () => {
     .catch((error) => {
       console.error('Error adding subscriber:', error);
   
-      // Rollback the UI update if the API call fails
+     
       setSubscribers(subscribers.filter(subscriber => subscriber.EmailAddress !== email));
     });
 
@@ -54,7 +53,6 @@ const HomePage = () => {
   };
 
   const handleDelete = (email) => {
-    // Optimistically remove the subscriber from the UI before waiting for the API response
     const updatedSubscribers = subscribers.filter(subscriber => subscriber.EmailAddress !== email);
     setSubscribers(updatedSubscribers);
   
@@ -67,14 +65,12 @@ const HomePage = () => {
       } else {
         console.error('Failed to delete subscriber');
   
-        // Rollback the UI update if the API call fails
         setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
       }
     })
     .catch((error) => {
       console.error('Error deleting subscriber:', error);
   
-      // Rollback the UI update if the API call fails
       setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
     });
   };

@@ -10,14 +10,14 @@ form {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 10px; /* Κενό ανάμεσα στα πεδία */
+  gap: 10px; 
 }
 
 input {
   padding: 8px;
   font-size: 16px;
   width: 100%;
-  max-width: 250px; /* Περιορισμός στο πλάτος */
+  max-width: 250px; 
   box-sizing: border-box;
 }
 
@@ -46,7 +46,7 @@ button:hover {
 .subscribers-table th, .subscribers-table td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: center; /* Κεντράρισμα των κελιών */
+  text-align: center; 
 }
 
 .subscribers-table th {
@@ -79,25 +79,25 @@ button:hover {
   height: 20px;
   cursor: pointer;
   display: block;
-  margin: 0 auto; /* Κεντράρισμα του icon */
+  margin: 0 auto; 
 }
 
 .delete-icon:hover {
   opacity: 0.7;
 }
 
-/* Responsive Στυλ για μικρότερες οθόνες */
+
 @media (max-width: 768px) {
   form {
-    flex-direction: column; /* Τα πεδία και το κουμπί το ένα κάτω από το άλλο */
-    align-items: center; /* Κεντράρισμα στη μέση */
-    gap: 15px; /* Μεγαλύτερο κενό ανάμεσα στα πεδία */
+    flex-direction: column; 
+    align-items: center; 
+    gap: 15px; 
   }
 
   input,
   button {
     width: 100%;
-    max-width: 100%; /* Κάνει τα πεδία να είναι στο 100% του διαθέσιμου πλάτους */
+    max-width: 100%; 
   }
 }
 
@@ -112,7 +112,7 @@ button:hover {
   }
 
   form {
-    gap: 20px; /* Περισσότερο κενό ανάμεσα στα πεδία για μικρές οθόνες */
+    gap: 20px; 
   }
 
   .subscribers-table th, .subscribers-table td {
