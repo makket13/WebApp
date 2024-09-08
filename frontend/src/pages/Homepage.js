@@ -6,7 +6,6 @@ const HomePage = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [updateFlag, setUpdateFlag] = useState(false);
 
   // Συνάρτηση για να κάνουμε fetch τους συνδρομητές
   const fetchSubscribers = () => {
@@ -16,13 +15,13 @@ const HomePage = () => {
         setSubscribers(data.Results);
       })
       .catch((error) => console.error('Error fetching subscribers:', error));
-      
+      console.log(subscribers);
   };
 
   useEffect(() => {
     fetchSubscribers(); // Τρέχουμε το fetch όταν γίνεται mount το component
-    console.log("gggg")
-  }, [updateFlag]);
+    
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,9 +40,6 @@ const HomePage = () => {
     .then(response => response.json())
     .then(data => {
       console.log('Subscriber added:', data);
-      setTimeout(() => {
-        setUpdateFlag(prev => !prev);  // Ανανεώνουμε το updateFlag μετά από καθυστέρηση
-      }, 1000);
       setName('');
       setEmail('');
     })
@@ -68,10 +64,9 @@ const HomePage = () => {
     .then((response) => {
       if (response.ok) {
         console.log(`Deleted subscriber: ${email}`);
-        setUpdateFlag(prev => !prev);
       } else {
         console.error('Failed to delete subscriber');
-        
+  
         // Rollback the UI update if the API call fails
         setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
       }
