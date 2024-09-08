@@ -10,7 +10,10 @@ Key Decisions and Known Limitations
 
 I opted to structure the project with clear separation between frontend and backend, each with its own npm setup.
 The primary limitation encountered was related to the delayed synchronization between my local app and Campaign Monitor’s API. Even though subscribers were successfully added or deleted in the Campaign Monitor dashboard, it sometimes took 20-30 seconds for the changes to reflect in my app. This delay could be due to a combination of API response times and caching, and it has not yet been resolved.
+
+
 Challenges and Unexpected Issues
+
 The slow retrieval of updated data from the Campaign Monitor API was the main challenge. This caused significant delays in testing and validation, as changes to the subscriber list were not instantly visible on the frontend. This delay was unexpected and made debugging more difficult.
 
 
