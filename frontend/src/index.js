@@ -10,12 +10,16 @@ import App from './App';
   script.async = true;
   document.head.appendChild(script);
 
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    window.dataLayer.push(arguments);
-  }
-  gtag('js', new Date());
-  gtag('config', 'G-YR1E87XH5Z');
+  script.onload = () => {
+    
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-YR1E87XH5Z');
+  };
 })();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
