@@ -14,7 +14,6 @@ const HomePage = () => {
         setSubscribers(data.Results);
       })
       .catch((error) => console.error('Error fetching subscribers:', error));
-      console.log(subscribers);
   };
 
   useEffect(() => {
@@ -38,7 +37,6 @@ const HomePage = () => {
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Subscriber added:', data);
       setName('');
       setEmail('');
     })

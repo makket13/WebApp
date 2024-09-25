@@ -1,0 +1,31 @@
+Report for Web Application Project
+
+Process Overview
+
+The task involved building a web application for managing subscribers through Campaign Monitor’s API. I divided the project into two main parts: frontend and backend. The backend was built using Express.js to manage the API requests, while the frontend was built with React to handle the user interface. I fetched subscribers from Campaign Monitor and displayed them, as well as enabled adding and deleting subscribers through the UI.
+
+
+
+Key Decisions and Known Limitations
+
+I opted to structure the project with clear separation between frontend and backend, each with its own npm setup.
+The primary limitation encountered was related to the delayed synchronization between my local app and Campaign Monitor’s API. Even though subscribers were successfully added or deleted in the Campaign Monitor dashboard, it sometimes took 20-30 seconds for the changes to reflect in my app. This delay could be due to a combination of API response times and caching, and it has not yet been resolved.
+Challenges and Unexpected Issues
+The slow retrieval of updated data from the Campaign Monitor API was the main challenge. This caused significant delays in testing and validation, as changes to the subscriber list were not instantly visible on the frontend. This delay was unexpected and made debugging more difficult.
+
+
+
+Problems Encountered and Solutions
+
+Delayed API Response: Although Campaign Monitor updated the subscriber list immediately, my application took time to reflect these changes. I attempted to solve this issue by refreshing the UI after each add or delete action, but the delay remained. Additional investigation into the API response times and potential caching issues would be necessary to fully resolve the problem.
+
+
+
+Tools and Techniques Used
+
+Frontend: React, JavaScript, HTML, CSS for responsive design.
+Backend: Node.js, Express.js to handle API calls.
+API: Axios for making requests to Campaign Monitor’s API.
+Version Control: Git and GitHub for version tracking.
+Deployment: Used npm start for both the frontend and backend.
+UI Techniques: I implemented responsive design for different screen sizes using media queries and improved user interaction with modals for confirmation dialogs.
