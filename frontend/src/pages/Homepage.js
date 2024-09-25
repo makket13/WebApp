@@ -8,7 +8,7 @@ const HomePage = () => {
   const [email, setEmail] = useState('');
 
   const fetchSubscribers = () => {
-    fetch('http://localhost:3001/api/subscribers')
+    fetch('https://webapp-v60b.onrender.com/api/subscribers')
       .then((response) => response.json())
       .then((data) => {
         setSubscribers(data.Results);
@@ -18,17 +18,15 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchSubscribers();
-    
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newSubscriber = { name, email };
-  
-    
+
     setSubscribers([...subscribers, { Name: name, EmailAddress: email }]);
-  
-    fetch('http://localhost:3001/api/subscribers', {
+
+    fetch('https://webapp-v60b.onrender.com/api/subscribers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,8 +40,6 @@ const HomePage = () => {
     })
     .catch((error) => {
       console.error('Error adding subscriber:', error);
-  
-     
       setSubscribers(subscribers.filter(subscriber => subscriber.EmailAddress !== email));
     });
 
@@ -53,8 +49,8 @@ const HomePage = () => {
   const handleDelete = (email) => {
     const updatedSubscribers = subscribers.filter(subscriber => subscriber.EmailAddress !== email);
     setSubscribers(updatedSubscribers);
-  
-    fetch(`http://localhost:3001/api/subscribers/${encodeURIComponent(email)}`, {
+
+    fetch(`https://webapp-v60b.onrender.com/api/subscribers/${encodeURIComponent(email)}`, {
       method: 'DELETE',
     })
     .then((response) => {
@@ -62,17 +58,15 @@ const HomePage = () => {
         console.log(`Deleted subscriber: ${email}`);
       } else {
         console.error('Failed to delete subscriber');
-  
         setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
       }
     })
     .catch((error) => {
       console.error('Error deleting subscriber:', error);
-  
       setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
     });
   };
-  
+
   return (
     <div className="homepage-container">
       <h1>Manage Subscribers</h1>
