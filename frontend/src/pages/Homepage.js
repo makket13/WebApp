@@ -6,9 +6,11 @@ const HomePage = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [startTime, setStartTime] = useState(null); // To record the start time
+  const [errors, setErrors] = useState(false); // To track if there are errors in submission
 
   const fetchSubscribers = () => {
-    fetch('http://localhost:3001/api/subscribers')
+    fetch('https://your-backend-api-url/api/subscribers')
       .then((response) => response.json())
       .then((data) => {
         setSubscribers(data.Results);
@@ -18,17 +20,40 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchSubscribers();
-    
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newSubscriber = { name, email };
-  
-    
+
+    if (!name || !email) {
+      setErrors(true);
+      return;
+    }
+
+    setErrors(false);
+
     setSubscribers([...subscribers, { Name: name, EmailAddress: email }]);
-  
-    fetch('http://localhost:3001/api/subscribers', {
+
+    const endTime = new Date().getTime(); // Time when "Add Subscriber" is clicked
+    const timeToSubmit = (endTime - startTime) / 1000; // Time in seconds
+
+    // Detect if email is personal or generic
+    const personalEmails = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "live.com"];
+    const emailDomain = email.split('@')[1];
+    const isGenericEmail = personalEmails.includes(emailDomain);
+
+    // Send event to Google Analytics
+    window.gtag('event', 'add_subscriber', {
+      event_category: 'Subscription',
+      event_label: 'Add Subscriber Button Click',
+      value: 1,
+      time_to_submit: timeToSubmit, // Custom parameter for time to submit
+      email_type: isGenericEmail ? 'generic' : 'personal', // Custom parameter for email type
+      submission_errors: errors ? 'yes' : 'no', // Custom parameter for submission errors
+    });
+
+    fetch('https://your-backend-api-url/api/subscribers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,19 +67,14 @@ const HomePage = () => {
     })
     .catch((error) => {
       console.error('Error adding subscriber:', error);
-  
-     
-      setSubscribers(subscribers.filter(subscriber => subscriber.EmailAddress !== email));
     });
-
-    return newSubscriber;
   };
 
   const handleDelete = (email) => {
     const updatedSubscribers = subscribers.filter(subscriber => subscriber.EmailAddress !== email);
     setSubscribers(updatedSubscribers);
-  
-    fetch(`http://localhost:3001/api/subscribers/${encodeURIComponent(email)}`, {
+
+    fetch(`https://your-backend-api-url/api/subscribers/${encodeURIComponent(email)}`, {
       method: 'DELETE',
     })
     .then((response) => {
@@ -62,21 +82,20 @@ const HomePage = () => {
         console.log(`Deleted subscriber: ${email}`);
       } else {
         console.error('Failed to delete subscriber');
-  
-        setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
       }
     })
     .catch((error) => {
       console.error('Error deleting subscriber:', error);
-  
-      setSubscribers([...updatedSubscribers, subscribers.find(subscriber => subscriber.EmailAddress === email)]);
     });
   };
-  
+
   return (
     <div className="homepage-container">
       <h1>Manage Subscribers</h1>
-      <form onSubmit={handleSubmit}>
+      <form 
+        onSubmit={handleSubmit} 
+        onFocus={() => setStartTime(new Date().getTime())} // Record the time when user starts typing
+      >
         <input 
           type="text" 
           placeholder="Name" 
